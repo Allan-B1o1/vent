@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Product {
   String? id;
   String name;
@@ -21,14 +19,15 @@ class Product {
     required this.stockQuantity,
     required this.imageUrl,
     required this.supplierId,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
-  factory Product.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+  // Factory constructor for creating a Product from a map (e.g., for mock data)
+  factory Product.fromMap(Map<String, dynamic> data) {
     return Product(
-      id: doc.id,
+      id: data['id'],
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? '',
@@ -36,13 +35,19 @@ class Product {
       stockQuantity: (data['stockQuantity'] ?? 0).toInt(),
       imageUrl: data['imageUrl'] ?? '',
       supplierId: data['supplierId'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      createdAt: data['createdAt'] is String
+          ? DateTime.parse(data['createdAt'])
+          : data['createdAt'],
+      updatedAt: data['updatedAt'] is String
+          ? DateTime.parse(data['updatedAt'])
+          : data['updatedAt'],
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  // Method to convert Product to a map (e.g., for mock data)
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'description': description,
       'category': category,
@@ -50,8 +55,8 @@ class Product {
       'stockQuantity': stockQuantity,
       'imageUrl': imageUrl,
       'supplierId': supplierId,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': Timestamp.fromDate(updatedAt),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 }

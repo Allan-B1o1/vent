@@ -1,24 +1,46 @@
 import 'package:get/get.dart';
 import 'package:vent/app/data/models/supplier_model.dart';
-import 'package:vent/app/data/repositories/supplier_repository.dart';
+// import 'package:vent/app/data/repositories/supplier_repository.dart';
 
 class SuppliersController extends GetxController {
-  final SupplierRepository _supplierRepository = SupplierRepository();
+  // final SupplierRepository _supplierRepository = SupplierRepository();
   RxList<Supplier> suppliers = <Supplier>[].obs;
   RxBool isLoading = true.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchSuppliers();
+    fetchSuppliers(); // Call mocked fetch
   }
 
   void fetchSuppliers() {
     isLoading.value = true;
-    _supplierRepository.getSuppliers().listen((data) {
-      suppliers.assignAll(data);
-      isLoading.value = false;
-    });
+    // Simulate fetching data with mock suppliers
+    suppliers.assignAll([
+      Supplier(
+        id: 'S001',
+        name: 'Mock Supplier A',
+        contactPerson: 'John Doe',
+        email: 'john.doe@example.com',
+        phone: '123-456-7890',
+        address: '123 Mock St, Mockville',
+        isPreferred: true,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+      Supplier(
+        id: 'S002',
+        name: 'Mock Supplier B',
+        contactPerson: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        phone: '098-765-4321',
+        address: '456 Fake Ave, Fakesburg',
+        isPreferred: false,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    ]);
+    isLoading.value = false;
   }
 
   Future<void> addSupplier({
@@ -31,20 +53,10 @@ class SuppliersController extends GetxController {
   }) async {
     isLoading.value = true;
     try {
-      Supplier newSupplier = Supplier(
-        name: name,
-        contactPerson: contactPerson,
-        email: email,
-        phone: phone,
-        address: address,
-        isPreferred: isPreferred,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-      await _supplierRepository.addSupplier(newSupplier);
-      Get.snackbar('Success', 'Supplier added successfully!');
+      // Mock add supplier
+      Get.snackbar('Success', 'Supplier added successfully (UI-only)!');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to add supplier: $e');
+      Get.snackbar('Error', 'Failed to add supplier (UI-only): $e');
     } finally {
       isLoading.value = false;
     }
@@ -53,10 +65,10 @@ class SuppliersController extends GetxController {
   Future<void> updateSupplier(Supplier supplier) async {
     isLoading.value = true;
     try {
-      await _supplierRepository.updateSupplier(supplier);
-      Get.snackbar('Success', 'Supplier updated successfully!');
+      // Mock update supplier
+      Get.snackbar('Success', 'Supplier updated successfully (UI-only)!');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to update supplier: $e');
+      Get.snackbar('Error', 'Failed to update supplier (UI-only): $e');
     } finally {
       isLoading.value = false;
     }
@@ -65,10 +77,10 @@ class SuppliersController extends GetxController {
   Future<void> deleteSupplier(String supplierId) async {
     isLoading.value = true;
     try {
-      await _supplierRepository.deleteSupplier(supplierId);
-      Get.snackbar('Success', 'Supplier deleted successfully!');
+      // Mock delete supplier
+      Get.snackbar('Success', 'Supplier deleted successfully (UI-only)!');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to delete supplier: $e');
+      Get.snackbar('Error', 'Failed to delete supplier (UI-only): $e');
     } finally {
       isLoading.value = false;
     }

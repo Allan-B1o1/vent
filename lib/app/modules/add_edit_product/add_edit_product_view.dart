@@ -1,3 +1,7 @@
+// author/developer: Buwembo Allan
+// page description: This page allows users to add or edit a product.
+// date: 2025-07-01
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/add_edit_product/add_edit_product_controller.dart';
@@ -43,7 +47,9 @@ class AddEditProductView extends GetView<AddEditProductController> {
                     const SizedBox(height: 16.0),
                     Center(
                       child: ElevatedButton.icon(
-                        onPressed: controller.pickImage,
+                        onPressed: () {
+                          // controller.pickImage;
+                        },
                         icon: const Icon(FeatherIcons.upload),
                         label: const Text('Upload Image'),
                       ),
@@ -103,14 +109,14 @@ class AddEditProductView extends GetView<AddEditProductController> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          controller.saveProduct(
-                            name: nameController.text,
-                            description: descriptionController.text,
-                            category: categoryController.text,
-                            price: double.tryParse(priceController.text) ?? 0.0,
-                            stockQuantity: int.tryParse(stockQuantityController.text) ?? 0,
-                            supplierId: supplierIdController.text,
-                          );
+                          // controller.saveProduct(
+                          //   name: nameController.text,
+                          //   description: descriptionController.text,
+                          //   category: categoryController.text,
+                          //   price: double.tryParse(priceController.text) ?? 0.0,
+                          //   stockQuantity: int.tryParse(stockQuantityController.text) ?? 0,
+                          //   supplierId: supplierIdController.text,
+                          // );
                         },
                         child: Text(isEditing ? 'Update Product' : 'Add Product'),
                       ),

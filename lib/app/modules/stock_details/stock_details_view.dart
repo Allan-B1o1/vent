@@ -1,3 +1,7 @@
+// author/developer: Buwembo Allan
+// page description: This page displays the details of a specific product.
+// date: 2025-07-06
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/stock_details/stock_details_controller.dart';

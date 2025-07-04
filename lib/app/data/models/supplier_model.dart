@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Supplier {
   String? id;
   String name;
@@ -19,35 +17,42 @@ class Supplier {
     required this.phone,
     required this.address,
     this.isPreferred = false,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
 
-  factory Supplier.fromFirestore(DocumentSnapshot doc) {
-    Map data = doc.data() as Map<String, dynamic>;
+  // Factory constructor for creating a Supplier from a map (e.g., for mock data)
+  factory Supplier.fromMap(Map<String, dynamic> data) {
     return Supplier(
-      id: doc.id,
+      id: data['id'],
       name: data['name'] ?? '',
       contactPerson: data['contactPerson'] ?? '',
       email: data['email'] ?? '',
       phone: data['phone'] ?? '',
       address: data['address'] ?? '',
       isPreferred: data['isPreferred'] ?? false,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp).toDate(),
+      createdAt: data['createdAt'] is String
+          ? DateTime.parse(data['createdAt'])
+          : data['createdAt'],
+      updatedAt: data['updatedAt'] is String
+          ? DateTime.parse(data['updatedAt'])
+          : data['updatedAt'],
     );
   }
 
-  Map<String, dynamic> toFirestore() {
+  // Method to convert Supplier to a map (e.g., for mock data)
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
       'contactPerson': contactPerson,
       'email': email,
       'phone': phone,
       'address': address,
       'isPreferred': isPreferred,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'updatedAt': Timestamp.fromDate(updatedAt),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 }

@@ -1,3 +1,7 @@
+// author/developer: Buwembo Allan
+// page description: This is the home page that contains the navigation rail and displays the different views.
+// date: 2025-07-03
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/home/home_controller.dart';
@@ -20,7 +24,7 @@ class HomeView extends GetView<HomeController> {
         children: [
           Obx(
             () => NavigationRail(
-              backgroundColor: backgroundColor,
+              backgroundColor: Colors.transparent,
               selectedIndex: controller.selectedIndex.value,
               onDestinationSelected: (index) {
                 controller.changePage(index);

@@ -1,3 +1,7 @@
+// author/developer: Buwembo Allan
+// page description: This page displays the list of suppliers.
+// date: 2025-07-07
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/suppliers/suppliers_controller.dart';
@@ -58,7 +62,7 @@ class SuppliersView extends GetView<SuppliersController> {
                                 confirmTextColor: primaryTextColor,
                                 buttonColor: accentColor,
                                 onConfirm: () {
-                                  controller.deleteSupplier(supplier.id!);
+                                  // controller.deleteSupplier(supplier.id!);
                                   Get.back();
                                 },
                               );
@@ -125,26 +129,26 @@ class SuppliersView extends GetView<SuppliersController> {
       confirmTextColor: primaryTextColor,
       buttonColor: primaryColor,
       onConfirm: () {
-        if (isEditing) {
-          controller.updateSupplier(supplier!.copyWith(
-            name: nameController.text,
-            contactPerson: contactPersonController.text,
-            email: emailController.text,
-            phone: phoneController.text,
-            address: addressController.text,
-            isPreferred: isPreferred.value,
-            updatedAt: DateTime.now(),
-          ));
-        } else {
-          controller.addSupplier(
-            name: nameController.text,
-            contactPerson: contactPersonController.text,
-            email: emailController.text,
-            phone: phoneController.text,
-            address: addressController.text,
-            isPreferred: isPreferred.value,
-          );
-        }
+        // if (isEditing) {
+        //   controller.updateSupplier(supplier!.copyWith(
+        //     name: nameController.text,
+        //     contactPerson: contactPersonController.text,
+        //     email: emailController.text,
+        //     phone: phoneController.text,
+        //     address: addressController.text,
+        //     isPreferred: isPreferred.value,
+        //     updatedAt: DateTime.now(),
+        //   ));
+        // } else {
+        //   controller.addSupplier(
+        //     name: nameController.text,
+        //     contactPerson: contactPersonController.text,
+        //     email: emailController.text,
+        //     phone: phoneController.text,
+        //     address: addressController.text,
+        //     isPreferred: isPreferred.value,
+        //   );
+        // }
         Get.back();
       },
     );

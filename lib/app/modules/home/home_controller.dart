@@ -5,5 +5,6 @@ class HomeController extends GetxController {
 
   void changePage(int index) {
     selectedIndex.value = index;
+    // This controller is purely for UI navigation and has no backend dependencies.
   }
 }

@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 import 'package:vent/app/app_pages.dart';
 import 'package:vent/theme/color_schemes.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart'; // Removed Firebase dependency
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: primaryColor,
         hintColor: accentColor,
-        scaffoldBackgroundColor: backgroundColor,
+        scaffoldBackgroundColor: Colors.transparent,
         textTheme: TextTheme(
           displayLarge: GoogleFonts.poppins(
               fontSize: 57, fontWeight: FontWeight.bold, color: primaryTextColor),
@@ -55,15 +55,15 @@ class MyApp extends StatelessWidget {
               fontSize: 11, fontWeight: FontWeight.w500, color: secondaryTextColor),
         ),
         cardTheme: Theme.of(context).cardTheme.copyWith(
-          color: Colors.grey[850], // A darker grey for cards
+          color: cardBackgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
           elevation: 4.0,
-          shadowColor: Colors.black.withOpacity(0.5),
+          shadowColor: shadowColor,
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: backgroundColor,
+          backgroundColor: Colors.transparent,
           foregroundColor: primaryTextColor,
           elevation: 0,
           titleTextStyle: GoogleFonts.poppins(

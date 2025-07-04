@@ -1,3 +1,7 @@
+// author/developer: Buwembo Allan
+// page description: This page displays the list of inventory products.
+// date: 2025-07-04
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/inventory_list/inventory_list_controller.dart';
@@ -39,7 +43,7 @@ class InventoryListView extends GetView<InventoryListController> {
                 fillColor: Colors.grey[900],
               ),
               onChanged: (value) {
-                controller.filterProducts(value);
+                // controller.filterProducts(value);
               },
             ),
           ),
@@ -80,7 +84,7 @@ class InventoryListView extends GetView<InventoryListController> {
                                       confirmTextColor: primaryTextColor,
                                       buttonColor: accentColor,
                                       onConfirm: () {
-                                        controller.deleteProduct(product.id!);
+                                        // controller.deleteProduct(product.id!);
                                         Get.back();
                                       },
                                     );
@@ -102,7 +106,7 @@ class InventoryListView extends GetView<InventoryListController> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () {
-                controller.bulkAction('some_action');
+                // controller.bulkAction('some_action');
               },
               child: const Text('Perform Bulk Action (Placeholder)'),
             ),
