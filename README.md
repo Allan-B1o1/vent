@@ -90,5 +90,5 @@ Built using `fl_chart` and `syncfusion_flutter_charts` for rich, interactive dat
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/vent-inventory-manager.git
+git clone https://github.com/Allan-B1o1//vent-inventory-manager.git
 cd vent-inventory-manager
