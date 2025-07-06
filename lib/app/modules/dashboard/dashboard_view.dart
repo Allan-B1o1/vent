@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vent/app/modules/dashboard/dashboard_controller.dart';
-import 'package:vent/theme/color_schemes.dart';
+// import 'package:vent/theme/color_schemes.dart'; // Theme colors are accessed via Theme.of(context)
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:vent/app/app_pages.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -15,19 +15,17 @@ class DashboardView extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      // extendBodyBehindAppBar: true, // Can cause UI issues if not handled carefully with padding
       appBar: AppBar(
-        title: Text(
-          'Dashboard',
-          style: Get.textTheme.headlineSmall?.copyWith(color: primaryTextColor),
-        ),
+        // backgroundColor, titleTextStyle, etc., are handled by appBarTheme in main.dart
+        title: Text('Dashboard', style: textTheme.headlineSmall),
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      body: Container(
-        color: backgroundColor,
+      body: SingleChildScrollView( // Added SingleChildScrollView for scrollability
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -35,9 +33,7 @@ class DashboardView extends GetView<DashboardController> {
             children: [
               Text(
                 'Key Performance Indicators',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
               GridView.count(
@@ -53,7 +49,7 @@ class DashboardView extends GetView<DashboardController> {
                     value: controller.totalProducts.value.toString(),
                     subtitle: 'Current total items in inventory',
                     icon: FeatherIcons.box,
-                    color: primaryColor,
+                    iconColor: theme.colorScheme.primary, // Use theme colors
                   ),
                   _buildKpiCard(
                     context,
@@ -61,7 +57,7 @@ class DashboardView extends GetView<DashboardController> {
                     value: controller.lowStockCount.value.toString(),
                     subtitle: 'Items nearing depletion',
                     icon: FeatherIcons.alertTriangle,
-                    color: accentColor,
+                    iconColor: theme.colorScheme.secondary, // Use theme colors
                   ),
                   _buildKpiCard(
                     context,
@@ -69,7 +65,7 @@ class DashboardView extends GetView<DashboardController> {
                     value: controller.outOfStockCount.value.toString(),
                     subtitle: 'Products with zero stock',
                     icon: FeatherIcons.slash,
-                    color: Colors.redAccent,
+                    iconColor: theme.colorScheme.error, // Use theme colors
                   ),
                   _buildKpiCard(
                     context,
@@ -77,39 +73,31 @@ class DashboardView extends GetView<DashboardController> {
                     value: controller.totalSuppliers.value.toString(),
                     subtitle: 'Linked active suppliers',
                     icon: FeatherIcons.users,
-                    color: secondaryColor,
+                    iconColor: theme.colorScheme.tertiary, // Example, define if needed or use primary/secondary
                   ),
                 ],
               ),
               const SizedBox(height: 32.0),
               Text(
                 'Stock Distribution',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => PieChart(
-                          PieChartData(
-                            sections: controller.pieChartSections,
-                            centerSpaceRadius: 40,
-                            sectionsSpace: 2,
+              SizedBox( // Explicitly size chart containers
+                height: 250,
+                child: Card( // Card styling from theme.cardTheme
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => PieChart(
+                        PieChartData(
+                          sections: controller.pieChartSections, // Ensure these sections use theme colors
+                          centerSpaceRadius: 40,
+                          sectionsSpace: 2,
+                          pieTouchData: PieTouchData(
+                            touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                              // Handle touch events if necessary
+                            },
                           ),
                         ),
                       ),
@@ -120,35 +108,27 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Stock Levels by Category',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
               SizedBox(
-                height: 200, // Fixed height for the bar chart
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => BarChart(
-                          BarChartData(
-                            barGroups: controller.barChartGroups,
-                            borderData: FlBorderData(show: false),
-                            gridData: const FlGridData(show: false),
-                            titlesData: const FlTitlesData(show: false),
-                          ),
+                height: 200,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => BarChart(
+                        BarChartData(
+                          barGroups: controller.barChartGroups, // Ensure these groups use theme colors
+                          borderData: FlBorderData(show: false),
+                          gridData: const FlGridData(show: false),
+                          titlesData: FlTitlesData(
+                            show: true,
+                            bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) => SideTitleWidget(axisSide: meta.axisSide, child: Text(meta.formattedValue, style: textTheme.bodySmall)))),
+                            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) => SideTitleWidget(axisSide: meta.axisSide, child: Text(meta.formattedValue, style: textTheme.bodySmall)))),
+                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                          )
                         ),
                       ),
                     ),
@@ -158,44 +138,36 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Stock Movement Over Time',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
               SizedBox(
-                height: 200, // Fixed height for the line chart
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => LineChart(
-                          LineChartData(
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: controller.stockMovementSpots,
-                                isCurved: true,
-                                color: accentColor,
-                                barWidth: 3,
-                                dotData: const FlDotData(show: false),
-                                belowBarData: BarAreaData(show: false),
-                              ),
-                            ],
-                            borderData: FlBorderData(show: false),
-                            gridData: const FlGridData(show: false),
-                            titlesData: const FlTitlesData(show: false),
-                          ),
+                height: 200,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => LineChart(
+                        LineChartData(
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: controller.stockMovementSpots,
+                              isCurved: true,
+                              color: theme.colorScheme.secondary, // Use theme color
+                              barWidth: 3,
+                              dotData: const FlDotData(show: false),
+                              belowBarData: BarAreaData(show: false),
+                            ),
+                          ],
+                          borderData: FlBorderData(show: false),
+                          gridData: const FlGridData(show: false),
+                           titlesData: FlTitlesData(
+                            show: true,
+                            bottomTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) => SideTitleWidget(axisSide: meta.axisSide, child: Text(meta.formattedValue, style: textTheme.bodySmall)))),
+                            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, getTitlesWidget: (value, meta) => SideTitleWidget(axisSide: meta.axisSide, child: Text(meta.formattedValue, style: textTheme.bodySmall)))),
+                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                          )
                         ),
                       ),
                     ),
@@ -205,59 +177,42 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Top Low-Stock Items',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
               SizedBox(
-                height: 150, // Fixed height for the horizontal list
+                height: 150,
                 child: Obx(
                   () => ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: controller.topLowStockItems.length,
                     itemBuilder: (context, index) {
                       final item = controller.topLowStockItems[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 16.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: Card(
-                            color: cardBackgroundColor,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                              side: BorderSide(
-                                color: Colors.white.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                            child: Container(
-                              width: 180,
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    item['name'],
-                                    style: Get.textTheme.titleMedium
-                                        ?.copyWith(color: primaryTextColor),
-                                  ),
-                                  Text(
-                                    'Qty: ${item['quantity']}',
-                                    style: Get.textTheme.headlineSmall
-                                        ?.copyWith(color: accentColor),
-                                  ),
-                                  Text(
-                                    item['category'],
-                                    style: Get.textTheme.bodySmall?.copyWith(
-                                      color: secondaryTextColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                      return SizedBox( // Give fixed width to horizontal list items
+                        width: 200,
+                        child: Card( // Card styling from theme
+                          margin: const EdgeInsets.only(right: 16.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item['name'],
+                                  style: textTheme.titleMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  'Qty: ${item['quantity']}',
+                                  style: textTheme.headlineSmall?.copyWith(color: theme.colorScheme.secondary),
+                                ),
+                                Text(
+                                  item['category'],
+                                  style: textTheme.bodySmall,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -269,33 +224,20 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Product Status',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => PieChart(
-                          PieChartData(
-                            sections: controller.productStatusSections,
-                            centerSpaceRadius: 60, // Donut chart effect
-                            sectionsSpace: 2,
-                          ),
+               SizedBox(
+                height: 250,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => PieChart(
+                        PieChartData(
+                          sections: controller.productStatusSections, // Ensure theme colors
+                          centerSpaceRadius: 60, // Donut chart effect
+                          sectionsSpace: 2,
                         ),
                       ),
                     ),
@@ -305,33 +247,20 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Supplier Contribution',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => PieChart(
-                          PieChartData(
-                            sections: controller.supplierContributionSections,
-                            centerSpaceRadius: 40,
-                            sectionsSpace: 2,
-                          ),
+              SizedBox(
+                height: 250,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Obx(
+                      () => PieChart(
+                        PieChartData(
+                          sections: controller.supplierContributionSections, // Ensure theme colors
+                          centerSpaceRadius: 40,
+                          sectionsSpace: 2,
                         ),
                       ),
                     ),
@@ -341,9 +270,7 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Quick Actions',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
               Wrap(
@@ -373,8 +300,13 @@ class DashboardView extends GetView<DashboardController> {
                     label: 'Export CSV',
                     icon: FeatherIcons.download,
                     onPressed: () {
-                      // Implement export functionality
-                      Get.snackbar('Export', 'Exporting data to CSV...');
+                      Get.snackbar(
+                        'Export',
+                        'Exporting data to CSV...',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: theme.colorScheme.surface,
+                        colorText: theme.colorScheme.onSurface,
+                      );
                     },
                   ),
                 ],
@@ -382,73 +314,25 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Recent Activities',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () => ListView.builder(
-                          itemCount: controller.recentActivities.length,
-                          itemBuilder: (context, index) {
-                            final activity =
-                                controller.recentActivities[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    activity.icon,
-                                    color: accentColor,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          activity.title,
-                                          style: Get.textTheme.titleMedium
-                                              ?.copyWith(
-                                                color: primaryTextColor,
-                                              ),
-                                        ),
-                                        Text(
-                                          activity.timestamp,
-                                          style: Get.textTheme.bodySmall
-                                              ?.copyWith(
-                                                color: secondaryTextColor,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+              Card( // Wrap ListView in a Card for consistent styling
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0), // Add padding inside card
+                  child: Obx(
+                    () => ListView.builder(
+                      shrinkWrap: true, // Important for ListView inside Column/SingleChildScrollView
+                      physics: const NeverScrollableScrollPhysics(), // If inside SingleChildScrollView
+                      itemCount: controller.recentActivities.length,
+                      itemBuilder: (context, index) {
+                        final activity = controller.recentActivities[index];
+                        return ListTile( // Use ListTile for better structure
+                          leading: Icon(activity.icon, color: theme.colorScheme.secondary, size: 24),
+                          title: Text(activity.title, style: textTheme.titleMedium),
+                          subtitle: Text(activity.timestamp, style: textTheme.bodySmall),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -456,109 +340,52 @@ class DashboardView extends GetView<DashboardController> {
               const SizedBox(height: 32.0),
               Text(
                 'Alerts & Notifications',
-                style: Get.textTheme.headlineSmall?.copyWith(
-                  color: primaryTextColor,
-                ),
+                style: textTheme.headlineSmall,
               ),
               const SizedBox(height: 16.0),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Card(
-                    color: cardBackgroundColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.0),
-                      side: BorderSide(
-                        color: Colors.white.withOpacity(0.2),
-                        width: 1,
+              Obx(
+                () => controller.alerts.isEmpty
+                    ? Card( // Wrap "No new alerts" in a Card too
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              'No new alerts',
+                              style: textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                            ),
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.alerts.length,
+                        itemBuilder: (context, index) {
+                          final alert = controller.alerts[index];
+                          return Card(
+                            color: alert.type == 'warning'
+                                ? theme.colorScheme.secondary.withOpacity(0.2) // Use theme colors
+                                : theme.colorScheme.error.withOpacity(0.2),    // Use theme colors
+                            margin: const EdgeInsets.only(bottom: 8.0),
+                            child: ListTile(
+                              leading: Icon(
+                                alert.icon,
+                                color: alert.type == 'warning'
+                                    ? theme.colorScheme.secondary
+                                    : theme.colorScheme.error,
+                              ),
+                              title: Text(alert.message, style: textTheme.titleMedium),
+                              subtitle: Text(alert.timestamp, style: textTheme.bodySmall),
+                              trailing: IconButton(
+                                icon: Icon(FeatherIcons.xCircle, color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                                onPressed: () => controller.dismissAlert(index),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Obx(
-                        () =>
-                            controller.alerts.isEmpty
-                                ? Center(
-                                  child: Text(
-                                    'No new alerts',
-                                    style: Get.textTheme.bodyLarge?.copyWith(
-                                      color: secondaryTextColor,
-                                    ),
-                                  ),
-                                )
-                                : ListView.builder(
-                                  itemCount: controller.alerts.length,
-                                  itemBuilder: (context, index) {
-                                    final alert = controller.alerts[index];
-                                    return Card(
-                                      color:
-                                          alert.type == 'warning'
-                                              ? Colors.orange.withOpacity(0.2)
-                                              : Colors.red.withOpacity(0.2),
-                                      margin: const EdgeInsets.only(
-                                        bottom: 8.0,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              alert.icon,
-                                              color:
-                                                  alert.type == 'warning'
-                                                      ? Colors.orange
-                                                      : Colors.red,
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    alert.message,
-                                                    style: Get
-                                                        .textTheme
-                                                        .titleMedium
-                                                        ?.copyWith(
-                                                          color:
-                                                              primaryTextColor,
-                                                        ),
-                                                  ),
-                                                  Text(
-                                                    alert.timestamp,
-                                                    style: Get
-                                                        .textTheme
-                                                        .bodySmall
-                                                        ?.copyWith(
-                                                          color:
-                                                              secondaryTextColor,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                FeatherIcons.xCircle,
-                                                color: secondaryTextColor,
-                                              ),
-                                              onPressed:
-                                                  () => controller
-                                                      .dismissAlert(index),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                      ),
-                    ),
-                  ),
-                ),
               ),
+              const SizedBox(height: 32.0), // Add some padding at the end
             ],
           ),
         ),
@@ -572,51 +399,44 @@ class DashboardView extends GetView<DashboardController> {
     required String value,
     required String subtitle,
     required IconData icon,
-    required Color color,
+    required Color iconColor, // Changed from 'color' to 'iconColor' for clarity
   }) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16.0),
-      child: Card(
-        color: cardBackgroundColor,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Card( // Card styling will come from theme.cardTheme
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded( // Allow title to wrap if too long
+                  child: Text(
                     title,
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      color: primaryTextColor,
-                    ),
-                  ),
-                  Icon(icon, color: color, size: 24),
-                ],
-              ),
-              Obx(
-                () => Text(
-                  value,
-                  style: Get.textTheme.displaySmall?.copyWith(
-                    color: primaryTextColor,
+                    style: textTheme.titleMedium,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                Icon(icon, color: iconColor, size: 24),
+              ],
+            ),
+            Obx( // Assuming 'value' might be observable, otherwise Text(value) is fine
+              () => Text(
+                value,
+                style: textTheme.displaySmall,
               ),
-              Text(
-                subtitle,
-                style: Get.textTheme.bodySmall?.copyWith(
-                  color: secondaryTextColor,
-                ),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              subtitle,
+              style: textTheme.bodySmall,
+              maxLines: 2, // Allow subtitle to take up to 2 lines
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
       ),
     );
@@ -628,22 +448,13 @@ class DashboardView extends GetView<DashboardController> {
     required IconData icon,
     required VoidCallback onPressed,
   }) {
+    final theme = Theme.of(context);
+    // ElevatedButton styling will come from theme.elevatedButtonTheme
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, color: primaryTextColor),
-      label: Text(
-        label,
-        style: Get.textTheme.labelLarge?.copyWith(color: primaryTextColor),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: cardBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1),
-        ),
-        elevation: 0,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      ),
+      icon: Icon(icon), // Icon color will be handled by the theme's foregroundColor
+      label: Text(label), // Text style will be handled by the theme
+      // No need to specify style here if it's well-defined in main.dart's theme
     );
   }
 }
